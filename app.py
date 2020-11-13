@@ -1,10 +1,22 @@
 import datetime
+import json
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent
 
 
 class App:
+
+    @classmethod
+    def configure(cls, filename):
+
+        with open(filename) as file:
+            config = json.load(file)
+
+        data_source = __import__(config['data_source']['name']).DataSource()
+        plot = __import__(config['plot']['name']).Plot()
+
+        return cls(data_source, plot)
 
     def __init__(self, data_source, plot):
         self.data_source = data_source
