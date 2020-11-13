@@ -34,6 +34,6 @@ def test_draw(monkeypatch):
 
 
 def test_configure():
-    app = App.configure('config.json')
+    app = App.configure('config_matplot.json')
 
     assert isinstance(app, App)
