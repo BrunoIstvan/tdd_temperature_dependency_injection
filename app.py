@@ -1,40 +1,24 @@
-import csv
-from datetime import datetime
+import datetime
 from pathlib import Path
-
-import matplotlib.dates
-import matplotlib.pyplot
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent
 
 
 class App:
 
-    def read(self, file_name):
+    def __init__(self, data_source, plot):
+        self.data_source = data_source
+        self.plot = plot
 
-        temperatures_by_hour = {}
-        file_name = Path(BASE_DIR).joinpath(file_name)
-
-        with open(file=file_name, mode='r') as file:
-            reader = csv.reader(file)
-            next(reader)
-
-            for row in reader:
-                hour = datetime.strptime(row[0], '%d/%m/%Y %H:%M').isoformat()
-                temperature = float(row[2])
-                temperatures_by_hour[hour] = temperature
-
-        return temperatures_by_hour
+    def read(self, **kwargs):
+        return self.data_source.read(**kwargs)
 
     def draw(self, temperatures_by_hour):
-
         dates = []
         temperatures = []
 
         for date, temp in temperatures_by_hour.items():
-            dates.append(date)
+            dates.append(datetime.datetime.fromisoformat(date))
             temperatures.append(temp)
 
-        dates = matplotlib.dates.date2num(dates)
-        matplotlib.pyplot.plot_date(dates, temperatures, linestyle='-')
-        matplotlib.pyplot.show()
+        self.plot.draw(dates, temperatures)
